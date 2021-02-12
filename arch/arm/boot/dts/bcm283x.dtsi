@@ -300,7 +300,7 @@
 		};
 
 		uart0: serial@7e201000 {
-			compatible = "arm,pl011", "arm,primecell";
+			compatible = "brcm,bcm2835-pl011", "arm,pl011", "arm,primecell"; /* UBUNTU: "brcm,bcm2835-pl011" is required for u-boot 2019.07 */
 			reg = <0x7e201000 0x200>;
 			interrupts = <2 25>;
 			clocks = <&clocks BCM2835_CLOCK_UART>,
@@ -334,7 +334,7 @@
 			status = "disabled";
 		};
 
-		i2c0: i2c@7e205000 {
+		i2c0if: i2c@7e205000 {
 			compatible = "brcm,bcm2835-i2c";
 			reg = <0x7e205000 0x200>;
 			interrupts = <2 21>;
@@ -342,6 +342,30 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			status = "disabled";
+		};
+
+		i2c0mux: i2c0mux {
+			compatible = "i2c-mux-pinctrl";
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			i2c-parent = <&i2c0if>;
+
+			pinctrl-names = "i2c0", "i2c_csi_dsi";
+
+			status = "disabled";
+
+			i2c0: i2c@0 {
+				reg = <0>;
+				#address-cells = <1>;
+				#size-cells = <0>;
+			};
+
+			i2c_csi_dsi: i2c@1 {
+				reg = <1>;
+				#address-cells = <1>;
+				#size-cells = <0>;
+			};
 		};
 
 		dpi: dpi@7e208000 {
