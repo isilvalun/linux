@@ -1,5 +1,13 @@
 #!/bin/bash
 
-nice make -j$(nproc) LOCALVERSION=-raspi KDEB_PKGVERSION=$(make kernelversion)-1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+export ARCH=arm64
+export FEATURESET=none
+export FLAVOUR=raspi
+export PATH=/usr/lib/ccache:"$PATH"
+export MAKEFLAGS="$(nproc)"
+export DEBIAN_KERNEL_DISABLE_DEBUG=yes
+export KBUILD_DEBARCH=arm64
+export TARGET_LIST=arm64
+nice make -j"$(nproc)" LOCALVERSION=-raspi KDEB_PKGVERSION="$(make kernelversion)"-1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
 
 exit 0
