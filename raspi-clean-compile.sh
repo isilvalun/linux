@@ -1,15 +1,17 @@
 #!/bin/bash
 
+export MAKEFLAGS="-j$(nproc) DEBIAN_KERNEL_DISABLE_DEBUG=yes KBUILD_DEBARCH=arm64 KBUILD_BUILD_VERSION=2 KERNELRELEASE=5.11.0-rc6-raspi TARGET_LIST=arm64 LOCALVERSION=-raspi ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-"
 rm -Rfv arch/arm/boot/dts/overlays/
+make $MAKEFLAGS clean && make $MAKEFLAGS mrproper && git reset --hard
 export ARCH=arm64
 export FEATURESET=none
 export FLAVOUR=raspi
 export PATH=/usr/lib/ccache:"$PATH"
-export MAKEFLAGS="-j$(nproc) LOCALVERSION=-raspi"
 export DEBIAN_KERNEL_DISABLE_DEBUG=yes
 export KBUILD_DEBARCH=arm64
+export KBUILD_BUILD_VERSION=2
+export KERNELRELEASE=5.11.0-rc6-raspi
 export TARGET_LIST=arm64
-make clean && make mrproper && git reset --hard
-nice make $MAKEFLAGS ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+make $MAKEFLAGS bindeb-pkg
 
 exit 0
